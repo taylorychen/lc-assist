@@ -10,12 +10,14 @@ import (
 )
 
 func main() {
+	url := "lc-track.vercel.app"
+	// url := "localhost:8080"
 	r := mux.NewRouter()
 	r.HandleFunc("/questions", GetQuestions).Methods("GET")
 	r.HandleFunc("/", Default)
 	r.Use(mux.CORSMethodMiddleware(r))
 
-	err := http.ListenAndServe("localhost:8080", r)
+	err := http.ListenAndServe(url, r)
 	if err != nil {
 		fmt.Printf("%v", err)
 		os.Exit(1)
