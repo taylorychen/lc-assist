@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import { QuestionsTable } from "./questionsTable";
+import { hostUrl } from "../utils/environ";
 
 export default function Dashboard() {
   const [questions, setQuestions] = useState([]);
   const getQuestions = () => {
-    const url = "http://localhost:8080/questions";
-    fetch(url)
+    fetch(`${hostUrl}/questions`)
       .then((response) => response.json())
       .then((questions) => {
         console.log("got questions");
