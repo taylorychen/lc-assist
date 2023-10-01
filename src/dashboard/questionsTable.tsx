@@ -68,7 +68,7 @@ export function QuestionsTable({ questions }: QuestionsTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event: unknown, newPage: number): void => {
     console.log(event);
     setPage(newPage);
   };
@@ -112,16 +112,22 @@ export function QuestionsTable({ questions }: QuestionsTableProps) {
                       const value = question[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {(() => {
+                          {/* {(() => {
                             switch (typeof value) {
                               case "boolean":
                                 if (value) {
                                   return (
-                                    <CheckCircleOutlineIcon color="success" />
+                                    <>
+                                      <CheckCircleOutlineIcon color="success" />
+                                      yes
+                                    </>
                                   );
                                 } else {
                                   return (
-                                    <PanoramaFishEyeIcon color="disabled" />
+                                    <>
+                                      <PanoramaFishEyeIcon color="disabled" />
+                                      No
+                                    </>
                                   );
                                 }
                               case "string":
@@ -133,7 +139,7 @@ export function QuestionsTable({ questions }: QuestionsTableProps) {
                               case "function":
                                 return null;
                             }
-                          })()}
+                          })()} */}
                           {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import { QuestionsTable } from "./questionsTable";
-import { hostUrl } from "../utils/environ";
 
 export default function Dashboard() {
   const [questions, setQuestions] = useState([]);
   const getQuestions = () => {
-    fetch(`${hostUrl}/questions`)
+    fetch(`/api/questions`)
       .then((response) => response.json())
       .then((questions) => {
         console.log("got questions");
