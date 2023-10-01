@@ -4,30 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
-
-	"github.com/gorilla/mux"
 )
-
-func main() {
-	url := "lc-track.vercel.app"
-	// url := "localhost:8080"
-	r := mux.NewRouter()
-	r.HandleFunc("/questions", GetQuestions).Methods("GET")
-	r.HandleFunc("/", Default)
-	r.Use(mux.CORSMethodMiddleware(r))
-
-	err := http.ListenAndServe(url, r)
-	if err != nil {
-		fmt.Printf("%v", err)
-		os.Exit(1)
-	}
-}
-
-func Default(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "OK\n")
-}
 
 type question struct {
 	Number     int    `json:"number"`
@@ -41,7 +18,7 @@ type output struct {
 	Questions []question `json:"questions"`
 }
 
-func GetQuestions(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	printLog("GetQuestions")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	list := []question{
