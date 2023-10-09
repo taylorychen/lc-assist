@@ -1,6 +1,4 @@
 import { useState } from "react";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
