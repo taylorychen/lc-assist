@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 func Connect() (*sql.DB, error) {
-	err := godotenv.Load("../../.env.local")
-	if err != nil {
-		return nil, err
-	}
+	// err := godotenv.Load("../.env.local")
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	host := os.Getenv("POSTGRES_HOST")
 	user := os.Getenv("POSTGRES_USER")

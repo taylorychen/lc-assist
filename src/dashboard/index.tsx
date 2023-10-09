@@ -5,10 +5,9 @@ import { QuestionsTable } from "./questionsTable";
 export default function Dashboard() {
   const [questions, setQuestions] = useState([]);
   const getQuestions = () => {
-    fetch(`/api/questions`)
+    fetch(`/api/questions?amount=10`)
       .then((response) => response.json())
       .then((questions) => {
-        console.log("got questions");
         setQuestions(questions);
       });
   };

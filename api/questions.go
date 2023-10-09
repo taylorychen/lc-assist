@@ -1,54 +1,93 @@
-package main
+package api
 
 import (
 	"encoding/json"
 	"fmt"
+	"lc-assist/utils"
 	"net/http"
+	"net/url"
+	"strconv"
+
+	_ "github.com/lib/pq"
 )
 
-type question struct {
-	Number     int    `json:"number"`
-	Name       string `json:"name"`
-	Difficulty string `json:"difficulty"`
-	Type       string `json:"type"`
-	Solved     bool   `json:"solved"`
-}
-
-type output struct {
-	Questions []question `json:"questions"`
-}
-
 func Handler(w http.ResponseWriter, r *http.Request) {
-	printLog("GetQuestions")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	list := []question{
-		{1, "BST", "E", "Tree", true},
-		{2, "Trie", "E", "Trie", true},
-		{3, "Dict", "M", "Hashmap", false},
-		{4, "Linked List", "M", "Two pointer", true},
-		{5, "Enumerate", "M", "Python", true},
-		{6, "Queue", "M", "Queue", true},
-		{7, "Breadth-First-Search", "M", "Graph", false},
-		{8, "Kruskal's Algorithm", "H", "Graph", false},
-		{9, "Binary Tree", "E", "Tree", true},
-		{10, "Prim's Algorithm", "M", "Graph", false},
-		{11, "Dijkstra", "M", "Graph", true},
-		{12, "Hello World", "E", "String", true},
-	}
-	out := output{
-		Questions: []question{},
-	}
-	for _, q := range list {
-		out.Questions = append(out.Questions, q)
-	}
-	res, err := json.Marshal(list)
+	db, err := utils.Connect()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Printf("%v\n", err)
+		http.Error(w, "unable to connect to db", http.StatusInternalServerError)
 		return
 	}
-	w.Write(res)
-}
+	defer db.Close()
 
-func printLog(fn string) {
-	fmt.Printf("Ran: %s\n", fn)
+	// err = db.Ping()
+	// if err != nil {
+	// 	fmt.Printf("%v\n", err)
+	// 	http.Error(w, "unable to ping db", http.StatusInternalServerError)
+	//  return
+	// }
+	// fmt.Println("connected")
+
+	// TODO: idk if this is right
+	vals, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil {
+		msg := fmt.Sprintf("error parsing query parameters: %s", err)
+		http.Error(w, msg, http.StatusBadRequest)
+		return
+	}
+	numStr, ok := vals["amount"]
+	if !ok {
+		http.Error(w, "missing parameter 'amount'", http.StatusBadRequest)
+		return
+	}
+	num, err := strconv.Atoi(numStr[0])
+	if err != nil {
+		http.Error(w, "input is not a number", http.StatusBadRequest)
+		return
+	}
+
+	query := "SELECT * FROM problems WHERE id <= $1"
+
+	rows, err := db.Query(query, num)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		http.Error(w, "query failed", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var questions []utils.Question
+	for rows.Next() {
+		var id int
+		var title string
+		var titleSlug string
+		var difficulty string
+		var isPremium bool
+
+		err = rows.Scan(&id, &title, &titleSlug, &difficulty, &isPremium)
+		if err != nil {
+			fmt.Printf("%v\n", err)
+			http.Error(w, "access failed", http.StatusInternalServerError)
+			return
+		}
+		// fmt.Println(id, title, titleSlug, difficulty, isPremium)
+		questions = append(questions, utils.Question{Id: id, Title: title, TitleSlug: titleSlug, Difficulty: difficulty, IsPremium: isPremium})
+	}
+
+	err = rows.Err()
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		http.Error(w, "access failed", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	out, err := json.Marshal(questions)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		http.Error(w, "unable to convert output to json", http.StatusInternalServerError)
+		return
+	}
+	w.Write(out)
+
 }

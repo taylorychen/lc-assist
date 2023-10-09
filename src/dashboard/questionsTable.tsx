@@ -11,7 +11,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
 type Column = {
-  id: "name" | "number" | "difficulty" | "type" | "solved";
+  id: "frontendQuestionId" | "title" | "difficulty" | "tags" | "paidOnly";
   dataType: "string" | "boolean" | "number";
   label: string;
   minWidth?: number;
@@ -20,45 +20,22 @@ type Column = {
 };
 
 const columns: readonly Column[] = [
-  { id: "number", dataType: "string", label: "#", minWidth: 170 },
-  { id: "name", dataType: "string", label: "Name", minWidth: 170 },
+  { id: "frontendQuestionId", dataType: "string", label: "#", minWidth: 170 },
+  { id: "title", dataType: "string", label: "Name", minWidth: 170 },
   { id: "difficulty", dataType: "string", label: "Difficulty", minWidth: 170 },
-  { id: "type", dataType: "string", label: "Type", minWidth: 170 },
-  { id: "solved", dataType: "boolean", label: "Solved", minWidth: 170 },
+  // { id: "tags", dataType: "string", label: "Tags", minWidth: 170 },
+  // { id: "paidOnly", dataType: "boolean", label: "Premium", minWidth: 170 },
 ];
 
 type Question = {
-  number: number;
-  name: string;
+  frontendQuestionId: string;
+  title: string;
+  titleSlug: string;
   difficulty: string;
-  type: string;
-  solved: boolean;
+  tags: Array<string>;
+  paidOnly: boolean;
+  // solved: boolean;
 };
-
-// function createData(
-//   number: number,
-//   name: string,
-//   difficulty: string,
-//   type: string,
-//   solved: boolean
-// ): Question {
-//   return { number, name, difficulty, type, solved };
-// }
-
-// const rows = [
-//   createData(1, "BST", "E", "Tree"),
-//   createData(2, "Trie", "E", "Trie"),
-//   createData(3, "Dict", "M", "Hashmap"),
-//   createData(4, "Linked List", "M", "Two pointer"),
-//   createData(5, "Enumerate", "M", "Python"),
-//   createData(6, "Queue", "M", "Queue"),
-//   createData(7, "Breadth-First-Search", "M", "Graph"),
-//   createData(8, "Kruskal's Algorithm", "H", "Graph"),
-//   createData(9, "Binary Tree", "E", "Tree"),
-//   createData(10, "Prim's Algorithm", "M", "Graph"),
-//   createData(11, "Dijkstra", "M", "Graph"),
-//   createData(12, "Hello World", "E", "String"),
-// ];
 
 type QuestionsTableProps = {
   questions: Array<Question>;
@@ -106,10 +83,11 @@ export function QuestionsTable({ questions }: QuestionsTableProps) {
                     hover
                     role="checkbox"
                     tabIndex={-1}
-                    key={question.number}
+                    key={question.frontendQuestionId}
                   >
                     {columns.map((column) => {
                       const value = question[column.id];
+                      console.log(column.id, value);
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {/* {(() => {
