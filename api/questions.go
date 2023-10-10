@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/taylorychen/lc-assist/utils"
+	"lc-assist/utils"
 	"net/http"
 	"net/url"
 	"strconv"
