@@ -1,4 +1,4 @@
-module lc-assist
+module github.com/taylorychen/lc-assist
 
 go 1.20
 

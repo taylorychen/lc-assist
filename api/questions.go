@@ -3,7 +3,8 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"lc-assist/utils"
+
+	"github.com/taylorychen/lc-assist/utils"
 	"net/http"
 	"net/url"
 	"strconv"
